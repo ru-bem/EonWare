@@ -1461,7 +1461,7 @@ echo:
 if %_unattended%==1 timeout /t 2 & exit /b
 call :dk_color %_Yellow% "Press any key to %_exitmsg%..."
 pause %nul1%
-exit /b
+exit
 
 ::========================================================================================================================================
 
