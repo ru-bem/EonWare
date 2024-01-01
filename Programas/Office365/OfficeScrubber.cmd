@@ -1,6 +1,6 @@
-<!-- : Begin batch script
 @setlocal DisableDelayedExpansion
 @echo off
+chcp 65001 >nul
 set _elev=
 set _args=
 set _args=%*
@@ -53,7 +53,7 @@ set _PSarg=%_PSarg:'=''%
 :Passed
 for /f "tokens=6 delims=[]. " %%G in ('ver') do set winbuild=%%G
 if %winbuild% LSS 7601 (
-set "msg=ERROR: Windows 7 SP1 is the minimum supported OS"
+set "msg=ERRO: Sistema mínimo suportado: Windows 7 SP1"
 goto :TheEnd
 )
 set _cwmi=0
@@ -89,17 +89,16 @@ set "_cscript=cscript //Nologo //B"
 setlocal EnableDelayedExpansion
 pushd "!_work!"
 for %%# in (OffScrubC2R.vbs,OffScrub_O16msi.vbs,OffScrub_O15msi.vbs,OffScrub10.vbs,OffScrub07.vbs,OffScrub03.vbs,CleanOffice.txt) do (
-if not exist ".\%%#" (set "msg=ERROR: required file %%# is missing"&goto :TheEnd)
+if not exist ".\%%#" (set "msg=ERROR: Arquivo requerido %%# não foi encontrado"&goto :TheEnd)
 )
 set "_Nul1=1>nul"
 set "_Nul2=2>nul"
 set "_Nul6=2^>nul"
 set "_Nul3=1>nul 2>nul"
 
-title Office Scrubber
-echo.
-echo ============================================================
-echo Detecting Office versions, please wait . . .
+title Desinstalador do Office
+echo:
+echo  Detectando versões instaladas...
 
 set OsppHook=1
 sc query osppsvc %_Nul3%
@@ -155,13 +154,13 @@ dir /b /s /a:-d "!_Local!\Microsoft\Office\Licenses\*1*" %_Nul3% && set _O16NXT=
 dir /b /s /a:-d "!ProgramData!\Microsoft\Office\Licenses\*1*" %_Nul3% && set _O16NXT=1
 reg query "%kO16%\Common\Licensing\LicensingNext" /v MigrationToV5Done %_Nul2% | find /i "0x1" %_Nul1% && set _O16NXT=1
 
-set tOCTR=0&set "dOCTR="
-set tOM16=0&set "dOM16="
-set tOM15=0&set "dOM15="
-set tOM14=0&set "dOM14="
-set tOM12=0&set "dOM12="
-set tOM11=0&set "dOM11="
-set tOUWP=0&set "dOUWP="
+set tOCTR=1&set "dOCTR="
+set tOM16=1&set "dOM16="
+set tOM15=1&set "dOM15="
+set tOM14=1&set "dOM14="
+set tOM12=1&set "dOM12="
+set tOM11=1&set "dOM11="
+set tOUWP=1&set "dOUWP="
 set "dONXT="
 if %_O15CTR% EQU 1 set tOCTR=1&set "dOCTR={*} / 2013"
 if %_O16CTR% EQU 1 set tOCTR=1&set "dOCTR={*}"
@@ -174,50 +173,18 @@ if %_O11MSI% EQU 1 set tOM11=1&set "dOM11={*}"
 if %_O16UWP% EQU 1 set tOUWP=1&set "dOUWP={*}"
 if %_O16NXT% EQU 1 set "dONXT={*}"
 
-:Menu
 set _er=0
-call :Hdr
-echo [1] Scrub ALL
-echo [2] Scrub Office C2R  %dOCTR%
-echo [3] Scrub Office 2016 %dOM16%
-echo [4] Scrub Office 2013 %dOM15%
-echo [5] Scrub Office 2010 %dOM14%
-echo [6] Scrub Office 2007 %dOM12%
-echo [7] Scrub Office 2003 %dOM11%
-if %winbuild% GEQ 10240 echo [8] Scrub Office UWP  %dOUWP%
-echo.
-echo. --- Office 2016 and later ---
-echo [C] Clean vNext Licenses %dONXT%
-echo [R] Remove all Licenses
-echo [T] Reset C2R Licenses
-echo [U] Uninstall all Keys
-echo.
-echo ============================================================
-choice /c 12345678CRTU0 /n /m "Choose a menu option, or press 0 to Exit: "
 set _er=%ERRORLEVEL%
-if %_er% EQU 13 goto :eof
-if %_er% EQU 12 goto :KeysU
-if %_er% EQU 11 goto :LcnsT
-if %_er% EQU 10 goto :LcnsR
-if %_er% EQU 9 goto :LcnsC
-if %_er% EQU 8 (if %winbuild% GEQ 10240 (goto :sOUWP) else (goto :Menu))
-if %_er% EQU 7 goto :sOM11
-if %_er% EQU 6 goto :sOM12
-if %_er% EQU 5 goto :sOM14
-if %_er% EQU 4 goto :sOM15
-if %_er% EQU 3 goto :sOM16
-if %_er% EQU 2 goto :sOCTR
-if %_er% EQU 1 set tOCTR=1&set tOM16=1&goto :mALL
-goto :Menu
+set tOCTR=1&set tOM16=1&goto :mALL
 
 :mALL
-set "aOCTR=NO  %dOCTR%"
-set "aOM16=NO  %dOM16%"
-set "aOM15=NO  %dOM15%"
-set "aOM14=NO  %dOM14%"
-set "aOM12=NO  %dOM12%"
-set "aOM11=NO  %dOM11%"
-set "aOUWP=NO  %dOUWP%"
+set "aOCTR=YES  %dOCTR%"
+set "aOM16=YES  %dOM16%"
+set "aOM15=YES  %dOM15%"
+set "aOM14=YES  %dOM14%"
+set "aOM12=YES  %dOM12%"
+set "aOM11=YES  %dOM11%"
+set "aOUWP=YES  %dOUWP%"
 if %tOCTR% EQU 1 set "aOCTR=YES %dOCTR%"
 if %tOM16% EQU 1 set "aOM16=YES %dOM16%"
 if %tOM15% EQU 1 set "aOM15=YES %dOM15%"
@@ -226,110 +193,90 @@ if %tOM12% EQU 1 set "aOM12=YES %dOM12%"
 if %tOM11% EQU 1 set "aOM11=YES %dOM11%"
 if %tOUWP% EQU 1 set "aOUWP=YES %dOUWP%"
 set _er=0
-call :Hdr
-echo [1] Start the operation
-echo [2] Office C2R : %aOCTR%
-echo [3] Office 2016: %aOM16%
-echo [4] Office 2013: %aOM15%
-echo [5] Office 2010: %aOM14%
-echo [6] Office 2007: %aOM12%
-echo [7] Office 2003: %aOM11%
-if %winbuild% GEQ 10240 echo [8] Office UWP : %aOUWP%
-echo.
-echo -------
-echo Notice:
-echo Manually selecting all is not necessary and will take a long time.
-echo.
-echo ============================================================
-choice /c 123456780 /n /m "Change menu options, or press 0 to Exit: "
-set _er=%ERRORLEVEL%
-if %_er% EQU 9 goto :eof
-if %_er% EQU 8 (if %tOUWP% EQU 1 (set tOUWP=0) else (set tOUWP=1)&goto :mALL)
-if %_er% EQU 7 (if %tOM11% EQU 1 (set tOM11=0) else (set tOM11=1)&goto :mALL)
-if %_er% EQU 6 (if %tOM12% EQU 1 (set tOM12=0) else (set tOM12=1)&goto :mALL)
-if %_er% EQU 5 (if %tOM14% EQU 1 (set tOM14=0) else (set tOM14=1)&goto :mALL)
-if %_er% EQU 4 (if %tOM15% EQU 1 (set tOM15=0) else (set tOM15=1)&goto :mALL)
-if %_er% EQU 3 (if %tOM16% EQU 1 (set tOM16=0) else (set tOM16=1)&goto :mALL)
-if %_er% EQU 2 (if %tOCTR% EQU 1 (set tOCTR=0) else (set tOCTR=1)&goto :mALL)
-if %_er% EQU 1 goto :sOALL
-goto :mALL
 
-:Hdr
-cls
-echo ============================================================
-goto :eof
+echo  Desinstalando todas as versões do office:
+echo:
+echo  Office C2R : %aOCTR%
+echo  Office 2016: %aOM16%
+echo  Office 2013: %aOM15%
+echo  Office 2010: %aOM14%
+echo  Office 2007: %aOM12%
+echo  Office 2003: %aOM11%
+if %winbuild% GEQ 10240 echo  Office UWP : %aOUWP%
+echo:
+goto :sOALL
 
 :sOALL
-call :Hdr
-echo.
-echo Uninstalling Product Keys . . .
+cls
+echo:
+echo  Removendo Chaves de Produto...
 call :cKMS %_Nul3%
-if %tOCTR% EQU 1 call :rOCTR
-if %tOUWP% EQU 1 if %_pwsh% EQU 1 call :rOUWP
-if %tOM16% EQU 1 call :rOM16
-if %tOM15% EQU 1 call :rOM15
-if %tOM14% EQU 1 call :rOM14
-if %tOM12% EQU 1 call :rOM12
-if %tOM11% EQU 1 call :rOM11
+call :rOCTR
+call :rOUWP
+call :rOM16
+call :rOM15
+call :rOM14
+call :rOM12
+call :rOM11
 call :cSPP
-goto :Fin
+goto :TheEnd
 
 :sOCTR
-call :Hdr
+
 call :rOCTR
 if %_O15MSI% EQU 0 call :cSPP
 goto :Fin
 
 :sOM16
-call :Hdr
+
 call :rOM16
 if %_O15MSI% EQU 0 call :cSPP
 goto :Fin
 
 :sOM15
-call :Hdr
+
 call :rOM15
 if %_O16MSI% EQU 0 if %_O16CTR% EQU 0 if %_O16UWP% EQU 0 call :cSPP
 goto :Fin
 
 :sOM14
-call :Hdr
+
 call :rOM14
 goto :Fin
 
 :sOM12
-call :Hdr
+
 call :rOM12
 goto :Fin
 
 :sOM11
-call :Hdr
+
 call :rOM11
 goto :Fin
 
 :sOUWP
-call :Hdr
+
 if %_pwsh% EQU 0 (
-set "msg=ERROR: Windows Powershell is not detected."
+set "msg=ERRO: Powershell não foi detectado."
 goto :TheEnd
 )
 call :rOUWP
-set "msg=Done."
+set "msg=Fim."
 goto :TheEnd
 
 :rOCTR
 if exist "!_file!" (
-echo.
-echo Executing OfficeClickToRun.exe . . .
+echo:
+echo  Executando OfficeClickToRun.exe...
 %_Nul3% start "" /WAIT "!_file!" platform=%_plat% productstoremove=AllProducts displaylevel=False
 )
 if exist "!_fil2!" if /i "%PROCESSOR_ARCHITECTURE%"=="arm64" (
-echo.
-echo Executing OfficeClickToRun.exe . . .
+echo:
+echo  Executando OfficeClickToRun.exe...
 %_Nul3% start "" /WAIT "!_fil2!" platform=%_plat% productstoremove=AllProducts displaylevel=False
 )
-echo.
-echo Scrubbing Office C2R . . .
+echo:
+echo  Removendo Office C2R...
 for %%A in (16,19,21) do call :cKpp %%A
 if %_O15CTR% EQU 1 call :cKpp 15
 %_Nul3% %_cscript% OffScrubC2R.vbs ALL /QUIET /OFFLINE
@@ -338,46 +285,46 @@ if %_O15CTR% EQU 1 call :cKpp 15
 goto :eof
 
 :rOUWP
-echo.
-echo Removing Office UWP Apps . . .
+echo:
+echo  Removendo Office UWP...
 %_Nul3% %_psc% "Get-AppXPackage -Name '*Microsoft.Office.Desktop*' | Foreach {Remove-AppxPackage $_.PackageFullName}"
 %_Nul3% %_psc% "Get-AppXProvisionedPackage -Online | Where DisplayName -Like '*Microsoft.Office.Desktop*' | Remove-AppXProvisionedPackage -Online"
 goto :eof
 
 :rOM16
-echo.
-echo Scrubbing Office 2016 MSI . . .
+echo:
+echo  Removendo Office 2016 MSI...
 call :cKpp 16
 %_Nul3% %_cscript% OffScrub_O16msi.vbs %_para%
 %_Nul3% call :officeREG 16
 goto :eof
 
 :rOM15
-echo.
-echo Scrubbing Office 2013 MSI . . .
+echo:
+echo  Removendo Office 2013 MSI...
 call :cKpp 15
 %_Nul3% %_cscript% OffScrub_O15msi.vbs %_para%
 %_Nul3% call :officeREG 15
 goto :eof
 
 :rOM14
-echo.
-echo Scrubbing Office 2010 . . .
+echo:
+echo  Removendo Office 2010...
 call :cK14
 %_Nul3% %_cscript% OffScrub10.vbs %_para%
 %_Nul3% call :officeREG 14
 goto :eof
 
 :rOM12
-echo.
-echo Scrubbing Office 2007 . . .
+echo:
+echo  Removendo Office 2007...
 %_Nul3% %_cscript% OffScrub07.vbs %_para%
 %_Nul3% call :officeREG 12
 goto :eof
 
 :rOM11
-echo.
-echo Scrubbing Office 2003 . . .
+echo:
+echo  Removendo Office 2003...
 %_Nul3% %_cscript% OffScrub03.vbs %_para%
 %_Nul3% call :officeREG 11
 goto :eof
@@ -394,8 +341,8 @@ goto :eof
 
 :slmgr
 if exist "%SysPath%\spp\store_test\2.0\tokens.dat" (
-echo.
-echo Refresh Windows Insider Preview Licenses . . .
+echo:
+echo Atualizando Licenças do Windows Insider Preview...
 %_cscript% %SysPath%\slmgr.vbs /rilc %_Nul3%
 if !ERRORLEVEL! NEQ 0 %_cscript% %SysPath%\slmgr.vbs /rilc %_Nul3%
 )
@@ -404,7 +351,7 @@ goto :eof
 :Fin
 for /f %%# in ('"dir /b %SystemRoot%\temp\ose*.exe" %_Nul6%') do taskkill /t /f /IM %%# %_Nul3%
 del /f /q "%SystemRoot%\temp\ose*.exe" %_Nul3%
-set "msg=Finished. It's recommended to restart the system."
+set "msg=Concluído. É recomendado reiniciar o sistema."
 goto :TheEnd
 
 :officeMSI
@@ -500,37 +447,37 @@ reg delete "%kO16%\Registration" /f
 goto :eof
 
 :LcnsC
-call :Hdr
-echo.
-echo Cleaning vNext Licenses . . .
+
+echo:
+echo Limpando Licença vNext...
 %_Nul3% call :vNextDir
 %_Nul3% call :vNextREG
-set "msg=Done."
+set "msg=Concluído."
 goto :TheEnd
 
 :KeysU
-call :Hdr
-echo.
-echo Uninstalling Product Keys . . .
+
+echo:
+echo Removendo Chaves de Produto...
 for %%A in (15,16,19,21) do call :cKpp %%A
-set "msg=Done."
+set "msg=Concluído."
 goto :TheEnd
 
 :LcnsR
-call :Hdr
-echo.
-echo Removing Office Licenses . . .
+
+echo:
+echo Removendo Licenças do Office...
 call :oppcln
 call :slmgr
-set "msg=Done."
+set "msg=Concluído."
 goto :TheEnd
 
 :LcnsT
-call :Hdr
-echo.
-echo Resetting Office C2R Licenses . . .
+
+echo:
+echo Resetando Licenças do Office C2R...
 if %_O16CTR% equ 0 (
-set "msg=ERROR: No installed Office ClickToRun detected."
+set "msg=ERRO: O Office ClickToRun não foi detectado no sistema."
 goto :TheEnd
 )
 set "_InstallRoot="
@@ -546,40 +493,40 @@ if not "%_InstallRoot%"=="" (
 set "_Integrator=%_InstallRoot%\integration\integrator.exe"
 for /f "skip=2 tokens=2*" %%a in ('"reg query %_PRIDs% /v ActiveConfiguration" %_Nul6%') do set "_PRIDs=%_PRIDs%\%%b"
 if not exist "%_Integrator%" (
-set "msg=ERROR: Could not detect Office Licenses Integrator.exe"
+set "msg=ERRO: Não foi possível detectar o Office Licenses Integrator.exe"
 goto :TheEnd
 )
 for /f "tokens=8 delims=\" %%a in ('reg query "%_PRIDs%" /f ".16" /k %_Nul6% ^| find /i "ClickToRun"') do (
 if not defined _SKUs (set "_SKUs=%%a") else (set "_SKUs=!_SKUs!,%%a")
 )
 if not defined _SKUs (
-set "msg=ERROR: Could not detect originally installed Office Products."
+set "msg=ERROR: Não foi possível detectar os produtos office instalados."
 goto :TheEnd
 )
-echo.
-echo Removing Office Licenses . . .
+echo:
+echo Removendo Office Licenses ...
 call :oppcln
 call :slmgr
-echo.
-echo Installing Office C2R Licenses . . .
+echo:
+echo Instalando Licenças do Office C2R...
 for %%a in (%_SKUs%) do (
 "!_Integrator!" /R /License PRIDName=%%a.16 PackageGUID="%_GUID%" PackageRoot="!_InstallRoot!" %_Nul1%
 )
-set "msg=Done."
+set "msg=Concluído."
 goto :TheEnd
 
 :E_Admin
-set "msg=ERROR: This script requires administrator privileges."
+set "msg=ERRO: Esse script requer permissões de administrador."
 goto :TheEnd
 
 :TheEnd
-echo.
-echo ============================================================
-echo %msg%
-echo.
-echo Press any key to exit.
-pause >nul
-goto :eof
+echo:
+echo [102m                                              [0m
+echo:
+echo Fechando o script em 5 segundos.
+timeout /t 5 /nobreak >nul
+exit
+
 
 ----- Begin wsf script --->
 <package>
