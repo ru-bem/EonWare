@@ -568,7 +568,7 @@ echo Help: %mas%idm-activation-script.html#Troubleshoot
 echo %line%
 echo:
 echo:
-if %_unattended%==1 timeout /t 2 & exit /b
+if %_unattended%==1 exit
 
 if defined terminal (
 call :_color %_Yellow% "Press 0 key to return..."
@@ -581,7 +581,7 @@ goto MainMenu
 
 :done2
 
-if %_unattended%==1 timeout /t 2 & exit /b
+if %_unattended%==1 exit
 
 if defined terminal (
 echo Press 0 key to exit...
@@ -590,7 +590,7 @@ choice /c 0 /n
 echo Press any key to exit...
 pause %nul1%
 )
-exit /b
+exit
 
 ::========================================================================================================================================
 
