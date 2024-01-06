@@ -12,5 +12,5 @@
   </Add>
   <Updates Enabled="TRUE" />
   <RemoveMSI />
-  <Display Level="None" AcceptEULA="TRUE" />
+  <Display Level="Full" AcceptEULA="TRUE" />
 </Configuration>
