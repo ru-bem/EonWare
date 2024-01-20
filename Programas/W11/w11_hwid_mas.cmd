@@ -102,7 +102,7 @@ title  HWID Activation %masver%
 
 set _args=
 set _elev=
-set _unattended=0
+set _unattended=1
 
 set _args=%*
 if defined _args set _args=%_args:"=%
