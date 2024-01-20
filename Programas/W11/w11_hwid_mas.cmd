@@ -1221,10 +1221,7 @@ exit /b
 :dk_done
 
 echo:
-if %_unattended%==1 & exit /b
-call :dk_color %_Yellow% "Press any key to %_exitmsg%..."
-pause %nul1%
-exit /b
+if %_unattended%==1 & exit
 
 ::========================================================================================================================================
 
