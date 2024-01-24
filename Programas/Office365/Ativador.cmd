@@ -193,19 +193,6 @@ setlocal EnableDelayedExpansion
 
 ::========================================================================================================================================
 
-echo "!_batf!" | find /i "!_ttemp!" %nul1% && (
-if /i not "!_work!"=="!_ttemp!" (
-%eline%
-echo Script is launched from the temp folder,
-echo Most likely you are running the script directly from the archive file.
-echo:
-echo Extract the archive file and launch the script from the extracted folder.
-goto dk_done
-)
-)
-
-::========================================================================================================================================
-
 ::  Elevate script as admin and pass arguments and preventing loop
 
 %nul1% fltmc || (
@@ -230,35 +217,6 @@ start cmd.exe /c ""!_batf!" %_args% -qedit"
 rem quickedit reset code is added at the starting of the script instead of here because it takes time to reflect in some cases
 exit /b
 )
-
-::========================================================================================================================================
-
-::  Check for updates
-
-set -=
-set old=
-
-for /f "delims=[] tokens=2" %%# in ('ping -4 -n 1 updatecheck.mass%-%grave.dev') do (
-if not [%%#]==[] (echo "%%#" | find "127.69" %nul1% && (echo "%%#" | find "127.69.%masver%" %nul1% || set old=1))
-)
-
-if defined old (
-echo ________________________________________________
-%eline%
-echo You are running outdated version MAS %masver%
-echo ________________________________________________
-echo:
-if not %_unattended%==1 (
-echo [1] Get Latest MAS
-echo [0] Continue Anyway
-echo:
-call :dk_color %_Green% "Enter a menu option in the Keyboard [1,0] :"
-choice /C:10 /N
-if !errorlevel!==2 rem
-if !errorlevel!==1 (start ht%-%tps://github.com/mass%-%gravel/Microsoft-Acti%-%vation-Scripts & start %mas% & exit /b)
-)
-)
-cls
 
 ::========================================================================================================================================
 
