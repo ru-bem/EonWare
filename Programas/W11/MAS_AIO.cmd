@@ -1518,7 +1518,7 @@ exit /b
 :dk_done
 
 echo:
-if %_unattended%==1 timeout /t 2 & exit /b
+if %_unattended%==1 exit
 call :dk_color %_Yellow% "Press any key to %_exitmsg%..."
 pause %nul1%
 exit /b
@@ -3964,7 +3964,6 @@ set _oldtsk=1
 
 if defined _unattended (
 call :Activation_Start
-timeout /t 2
 goto Done
 )
 
@@ -6976,7 +6975,7 @@ call :_color %Green% "Online KMS Complete Uninstall was done successfully."
 echo __________________________________________________________________________________________
 )
 
-if defined _unattended timeout /t 2 & exit /b
+if defined _unattended exit
 
 echo.
 call :_color %_Yellow% "Press any key to go back..."
@@ -10601,7 +10600,7 @@ exit /b
 
 :MASend
 echo:
-if defined _MASunattended timeout /t 2 & exit /b
+if defined _MASunattended exit
 echo Press any key to exit...
 pause >nul
 exit /b
