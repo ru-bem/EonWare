@@ -644,7 +644,7 @@ exit /b
 
 set /a attempt=0
 if exist "%file%" del /f /q "%file%"
-start "" /B "%IDMan%" /n /d "%link%" /p "%SystemRoot%\Temp" /f temp.png
+start "" /MIN /B "%IDMan%" /n /d "%link%" /p "%SystemRoot%\Temp" /f temp.png
 
 :check_file
 
